@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Hunter Bot Status</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Plus+Jakarta+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.2);
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --error: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 20% 30%, var(--primary-glow) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, var(--primary-glow) 0%, transparent 40%);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            padding: 2rem;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .status-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease;
+        }
+
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 100px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .badge.offline {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .pulse {
+            width: 8px;
+            height: 8px;
+            background: currentColor;
+            border-radius: 50%;
+            box-shadow: 0 0 0 0 currentColor;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            padding: 1.25rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .footer {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: #4f46e5;
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        /* Insights Section */
+        .insights-section {
+            text-align: left;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .section-title {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+        .users-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            font-size: 0.9rem;
+        }
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 0.75rem;
+        }
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .user-name {
+            font-weight: 600;
+            color: var(--text);
+        }
+        .user-handle {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="status-card">
+            <div class="logo">Book Hunter</div>
+            
+            <div id="status-badge" class="badge">
+                <div class="pulse"></div>
+                <span id="status-text">Checking System...</span>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div id="stat-downloads" class="stat-value">--</div>
+                    <div class="stat-label">Total MiB</div>
+                </div>
+                <div class="stat-item">
+                    <div id="stat-users" class="stat-value">--</div>
+                    <div class="stat-label">Active Users</div>
+                </div>
+            </div>
+
+            <div class="insights-section">
+                <h3 class="section-title">Recent Users</h3>
+                <div id="users-list" class="users-list">
+                    <div style="color: var(--text-muted); font-size: 0.875rem;">Loading users...</div>
+                </div>
+            </div>
+
+            <div class="footer" style="margin-top: 1.5rem;">
+                Server Time: <span id="server-time">--</span><br>
+                Last Heartbeat: <span id="last-update">Just now</span>
+            </div>
+
+            <a href="https://t.me/bookhuntersbot" class="btn">Open on Telegram</a>
+        </div>
+    </div>
+
+    <script>
+        async function updateStatus() {
+            try {
+                const response = await fetch('stats.json');
+                if (!response.ok) throw new Error('Offline');
+                const data = await response.json();
+                
+                document.getElementById('stat-downloads').textContent = (data.total_downloads || 0).toLocaleString();
+                document.getElementById('stat-users').textContent = (data.total_users || 0).toLocaleString();
+                document.getElementById('server-time').textContent = data.server_time || '--';
+                
+                // Users list
+                const list = document.getElementById('users-list');
+                list.innerHTML = '';
+                if (data.users && data.users.length > 0) {
+                    data.users.slice().reverse().forEach(user => {
+                        const initials = user.name.substring(0, 2).toUpperCase();
+                        const card = `
+                            <div class="user-card">
+                                <div class="user-avatar">${initials}</div>
+                                <div class="user-info">
+                                    <span class="user-name">${user.name}</span>
+                                    <span class="user-handle">${user.username !== 'N/A' ? '@' + user.username : ''}</span>
+                                </div>
+                            </div>
+                        `;
+                        list.innerHTML += card;
+                    });
+                } else {
+                    list.innerHTML = '<div style="color: var(--text-muted); font-size: 0.875rem;">No recent activity</div>';
+                }
+                
+                // Heartbeat
+                const lastHeartbeat = new Date(data.last_heartbeat);
+                const diff = (new Date() - lastHeartbeat) / 1000 / 60;
+                
+                if (diff < 5) {
+                    document.getElementById('status-text').textContent = 'System Online';
+                    document.getElementById('status-badge').className = 'badge';
+                } else {
+                    document.getElementById('status-text').textContent = 'Bot Lagging';
+                    document.getElementById('status-badge').className = 'badge offline';
+                }
+                
+                document.getElementById('last-update').textContent = lastHeartbeat.toLocaleTimeString();
+                
+            } catch (error) {
+                document.getElementById('status-text').textContent = 'System Offline';
+                document.getElementById('status-badge').className = 'badge offline';
+            }
+        }
+
+        setInterval(updateStatus, 15000);
+        updateStatus();
+    </script>
+</body>
+</html>
