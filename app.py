@@ -1,11 +1,14 @@
 import os
 import sys
 from flask import Flask, request, jsonify, render_template_string
+from werkzeug.middleware.proxy_fix import ProxyFix
 from telegram import Update
 from main import create_bot_app, TOKEN
 
 # Initialize Flask app
 app = Flask(__name__)
+# Tell Flask it is behind a proxy (like Render) to correctly resolve https:// for webhooks
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 # Initialize Telegram Bot Application
 # Note: We don't run_polling here; we use webhooks.
@@ -54,5 +57,6 @@ async def set_webhook():
     return "Failed to set webhook", 500
 
 if __name__ == '__main__':
-    # Local testing
-    app.run(port=8000)
+    # Local testing or direct execution fallback
+    port = int(os.environ.get('PORT', 8000))
+    app.run(host='0.0.0.0', port=port)
